@@ -37,6 +37,13 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
   className = '',
   emptyState,
 }) => {
+  // API/import safety: never render malformed placeholder records from a
+  // supplier feed (for example, records with an "Untitled Product" title).
+  const visibleProducts = (products || []).filter((product) => {
+    const title = typeof product?.title === 'string' ? product.title.trim() : '';
+    return title.length >= 2 && !/^untitled(?: product)?$/i.test(title);
+  });
+
   if (loading) {
     return (
       <div className={compact ? 'pb-grid-products-compact' : 'pb-grid-products'}>
@@ -47,13 +54,13 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
     );
   }
 
-  if (!products || products.length === 0) {
+  if (visibleProducts.length === 0) {
     return <>{emptyState}</>;
   }
 
   return (
     <div className={`${compact ? 'pb-grid-products-compact' : 'pb-grid-products'} ${className}`}>
-      {products.map((product) => (
+      {visibleProducts.map((product) => (
         <ProductCard key={product.id} product={product} compact={compact} />
       ))}
     </div>
