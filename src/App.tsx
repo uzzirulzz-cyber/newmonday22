@@ -34,7 +34,7 @@ function isAdminUrl(): boolean {
 }
 
 const AppContent: React.FC = () => {
-  const { activeView, setActiveView, currentUser, setCurrentUser } = useStore();
+  const { activeView, setActiveView, currentUser, setCurrentUser, addToast } = useStore();
 
   // Check if the current user is an authenticated admin
   const ADMIN_ROLES = ['super_admin', 'admin', 'product_manager', 'order_manager', 'finance_manager', 'support_agent', 'content_manager', 'marketing_manager', 'read_only'];
@@ -68,9 +68,9 @@ const AppContent: React.FC = () => {
     const [provider, code] = authError.split(':');
     const providerName = provider ? provider.charAt(0).toUpperCase() + provider.slice(1) : 'Social';
     if (code === 'not-configured') {
-      useStore.getState().addToast('warning', `${providerName} sign-in unavailable`, 'This sign-in method is not configured yet. Please use email or contact support.');
+      addToast('warning', `${providerName} sign-in unavailable`, 'This sign-in method is not configured yet. Please use email or contact support.');
     } else {
-      useStore.getState().addToast('error', 'Sign-in could not be completed', 'Please try again or use email and password.');
+      addToast('error', 'Sign-in could not be completed', 'Please try again or use email and password.');
     }
     window.history.replaceState({}, document.title, window.location.pathname);
   }, []);
