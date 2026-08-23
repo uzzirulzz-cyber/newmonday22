@@ -18,10 +18,10 @@ export const VerifiedInventorySection: React.FC<VerifiedInventorySectionProps> =
         <div>
           <span className="pb-eyebrow"><Icon className="w-3 h-3" /> {eyebrow}</span>
           <h2 className="text-2xl sm:text-3xl font-bold text-white font-display">{title}</h2>
-          <p className="text-[var(--pb-silver-3)] text-sm mt-1">Verified PlayBeat inventory with transparent selling prices.</p>
+          <p className="text-[var(--pb-silver-3)] text-sm mt-1">PlayBeat Digital products with secure digital delivery.</p>
         </div>
         <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-wider text-emerald-400">
-          <ShieldCheck className="w-4 h-4" /> Verified inventory only
+          <ShieldCheck className="w-4 h-4" /> PlayBeat Digital
         </div>
       </div>
       <ProductGrid products={products} />
