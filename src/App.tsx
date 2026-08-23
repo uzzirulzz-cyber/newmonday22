@@ -10,6 +10,9 @@ import { WhatsAppModal } from './components/common/WhatsAppModal';
 import { HeroSection } from './components/storefront/HeroSection';
 import { CategoryGrid } from './components/storefront/CategoryGrid';
 import { TrendingSection } from './components/storefront/TrendingSection';
+import { VerifiedAiToolsSection, VerifiedStreamingSection } from './components/storefront/VerifiedInventorySection';
+import { VIDEO_STREAMING_INVENTORY } from './data/videoStreamingInventory';
+import { VERIFIED_AI_TOOLS_INVENTORY } from './data/verifiedAiToolsInventory';
 import { SmartProjectorShowcase } from './components/storefront/SmartProjectorShowcase';
 import { FlashDealsSection } from './components/storefront/FlashDealsSection';
 import { FAQSection } from './components/storefront/FAQSection';
@@ -137,6 +140,8 @@ const AppContent: React.FC = () => {
           <main className="flex-1">
             <HeroSection />
             <CategoryGrid />
+            <VerifiedStreamingSection products={VIDEO_STREAMING_INVENTORY} />
+            <VerifiedAiToolsSection products={VERIFIED_AI_TOOLS_INVENTORY} />
             <TrendingSection />
             <SmartProjectorShowcase />
             <FlashDealsSection />
