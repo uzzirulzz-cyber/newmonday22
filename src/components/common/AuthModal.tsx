@@ -37,6 +37,7 @@ export const AuthModal: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [country, setCountry] = useState('');
   const [phone, setPhone] = useState('');
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -52,6 +53,7 @@ export const AuthModal: React.FC = () => {
   const resetForm = () => {
     setEmail(''); setName(''); setPassword(''); setConfirmPassword('');
     setCountry(''); setPhone(''); setResetToken(''); setNewPassword('');
+    setAcceptedTerms(false);
     setResetTokenFromApi('');
     setErrors({}); setShowPassword(false); setShowResetToken(false);
     setApiError('');
@@ -84,6 +86,7 @@ export const AuthModal: React.FC = () => {
     }
     if (mode === 'signup' && password !== confirmPassword) next.confirmPassword = 'Passwords do not match.';
     if (mode === 'signup' && !country) next.country = 'Please select your country.';
+    if (mode === 'signup' && !acceptedTerms) next.terms = 'Please accept the Terms of Service and Privacy Policy.';
     if (mode === 'reset' && !resetToken) next.resetToken = 'Reset token is required.';
     if (mode === 'reset' && !newPassword) next.newPassword = 'New password is required.';
     else if (mode === 'reset' && newPassword.length < 8) next.newPassword = 'Minimum 8 characters.';
@@ -188,20 +191,20 @@ export const AuthModal: React.FC = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={handleClose} className="absolute inset-0 bg-black/85 backdrop-blur-md" />
           <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
-            className="relative w-full max-w-md max-h-[92vh] overflow-y-auto scrollbar-thin rounded-2xl bg-[#0F111A] border border-white/10 shadow-2xl p-6 z-10"
+            className="relative w-full max-w-md max-h-[92vh] overflow-y-auto scrollbar-thin rounded-2xl bg-[#141414] border border-[#333] shadow-2xl p-0 z-10"
             role="dialog" aria-modal="true" aria-labelledby="auth-modal-title">
             {/* Header */}
-            <div className="flex items-center justify-between pb-4 border-b border-white/10">
+            <div className="text-center px-6 pt-7 pb-5 border-b border-[#333]">
               <div className="flex items-center gap-2">
                 {mode !== 'login' && mode !== 'signup' && (
                   <button onClick={() => switchMode('login')} className="p-1 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white mr-1">
                     <ArrowLeft className="w-4 h-4" />
                   </button>
                 )}
-                <div className="w-8 h-8 rounded-xl bg-red-600/20 border border-red-500/30 flex items-center justify-center text-red-400">
+                <div className="w-8 h-8 rounded-xl bg-red-600/20 border border-red-500/30 flex items-center justify-center text-red-400 mx-auto">
                   <Shield className="w-4 h-4" />
                 </div>
-                <div>
+                <div className="text-left">
                   <h3 id="auth-modal-title" className="text-base font-bold text-white font-display">{titleMap[mode]}</h3>
                   <p className="text-xs text-neutral-400">{subtitleMap[mode]}</p>
                 </div>
@@ -237,7 +240,7 @@ export const AuthModal: React.FC = () => {
             )}
 
             {(mode === 'login' || mode === 'signup') && (
-              <div className="mt-4 space-y-2">
+              <div className="px-6 pt-6 space-y-3">
                 <button
                   type="button"
                   onClick={() => handleSocialAuth('google')}
@@ -269,7 +272,7 @@ export const AuthModal: React.FC = () => {
             )}
 
             {(mode === 'login' || mode === 'signup') && (
-              <div className="mt-4 flex items-center gap-3 text-[10px] text-neutral-500">
+              <div className="mx-6 mt-5 flex items-center gap-3 text-[10px] text-neutral-500">
                 <div className="h-px flex-1 bg-white/10" />
                 <span>or continue with email</span>
                 <div className="h-px flex-1 bg-white/10" />
@@ -277,14 +280,14 @@ export const AuthModal: React.FC = () => {
             )}
 
             {/* Form */}
-            <form onSubmit={handleSubmit} className="mt-4 space-y-3" noValidate>
+            <form onSubmit={handleSubmit} className="px-6 pt-5 pb-6 space-y-3" noValidate>
               {/* Name — signup only */}
               {mode === 'signup' && (
                 <div>
                   <label className="block text-[11px] text-neutral-400 mb-1 font-mono">Full Name</label>
                   <div className="relative">
                     <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-500" />
-                    <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="John Doe" className={`pl-9 ${inputClass('name')}`} />
+                    <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="John Doe" className={`pl-9 ${inputClass('name')}`} autoComplete="name" maxLength={100} />
                   </div>
                   {errors.name && <p className="mt-1 text-[10px] text-red-400 flex items-center gap-1"><AlertCircle className="w-3 h-3" /> {errors.name}</p>}
                 </div>
@@ -321,7 +324,7 @@ export const AuthModal: React.FC = () => {
                   <label className="block text-[11px] text-neutral-400 mb-1 font-mono">Mobile Number <span className="text-neutral-600">(optional)</span></label>
                   <div className="relative">
                     <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-500" />
-                    <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+1 (555) 000-0000" className={`pl-9 ${inputClass('phone')}`} autoComplete="tel" />
+                    <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value.replace(/[^0-9+()\-\s]/g, ''))} placeholder="+1 (555) 000-0000" className={`pl-9 ${inputClass('phone')}`} autoComplete="tel" inputMode="tel" />
                   </div>
                 </div>
               )}
@@ -341,6 +344,7 @@ export const AuthModal: React.FC = () => {
                   </div>
                   {errors.password && <p className="mt-1 text-[10px] text-red-400 flex items-center gap-1"><AlertCircle className="w-3 h-3" /> {errors.password}</p>}
                   {mode === 'signup' && password && !errors.password && <p className={`mt-1 text-[10px] ${passwordStrength === 'Strong' ? 'text-emerald-400' : passwordStrength === 'Medium' ? 'text-amber-400' : 'text-red-400'}`}>Password strength: {passwordStrength}</p>}
+                  {mode === 'signup' && password && <div className="mt-2 h-1 rounded-full bg-white/10 overflow-hidden"><div className={`h-full transition-all ${passwordStrength === 'Strong' ? 'w-full bg-emerald-500' : passwordStrength === 'Medium' ? 'w-2/3 bg-amber-500' : 'w-1/3 bg-red-500'}`} /></div>}
                 </div>
               )}
 
@@ -355,6 +359,14 @@ export const AuthModal: React.FC = () => {
                   {errors.confirmPassword && <p className="mt-1 text-[10px] text-red-400 flex items-center gap-1"><AlertCircle className="w-3 h-3" /> {errors.confirmPassword}</p>}
                 </div>
               )}
+
+              {mode === 'signup' && (
+                <label className="flex items-start gap-2.5 py-1 text-[11px] text-neutral-400 cursor-pointer">
+                  <input type="checkbox" checked={acceptedTerms} onChange={(e) => setAcceptedTerms(e.target.checked)} className="mt-0.5 h-4 w-4 accent-red-600" />
+                  <span>I agree to the <button type="button" className="text-red-400 hover:text-red-300 underline">Terms of Service</button> and <button type="button" className="text-red-400 hover:text-red-300 underline">Privacy Policy</button>. I’m at least 18 years old.</span>
+                </label>
+              )}
+              {errors.terms && <p className="text-[10px] text-red-400 flex items-center gap-1"><AlertCircle className="w-3 h-3" /> {errors.terms}</p>}
 
               {/* Reset Token — reset mode only */}
               {mode === 'reset' && (
@@ -420,7 +432,7 @@ export const AuthModal: React.FC = () => {
             )}
 
             {/* Security note */}
-            <div className="mt-4 p-2.5 rounded-lg bg-emerald-500/5 border border-emerald-500/15 flex items-start gap-2 text-[10px] text-neutral-400 leading-snug">
+            <div className="mx-6 mb-6 p-3 rounded-lg bg-emerald-500/5 border border-emerald-500/15 flex items-start gap-2 text-[10px] text-neutral-400 leading-snug">
               <Shield className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
               <span>
                 Sign up creates a customer account. Passwords are hashed with bcrypt — we never store plaintext.
