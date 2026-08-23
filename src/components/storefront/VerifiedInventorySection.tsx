@@ -1,5 +1,5 @@
 import React from 'react';
-import { BadgeCheck, Bot, Film, ShieldCheck } from 'lucide-react';
+import { Bot, Film, ShieldCheck } from 'lucide-react';
 import { ProductGrid } from './ProductGrid';
 import type { Product } from '../../types';
 
@@ -23,10 +23,6 @@ export const VerifiedInventorySection: React.FC<VerifiedInventorySectionProps> =
         <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-wider text-emerald-400">
           <ShieldCheck className="w-4 h-4" /> Verified inventory only
         </div>
-      </div>
-      <div className="flex items-center gap-2 rounded-xl border border-emerald-500/20 bg-emerald-500/5 px-3 py-2 text-[11px] text-emerald-300">
-        <BadgeCheck className="w-4 h-4 shrink-0" />
-        <span>Prices include the PlayBeat 35% inventory markup. No offers, offer counts, or marketplace links are shown.</span>
       </div>
       <ProductGrid products={products} />
     </div>
