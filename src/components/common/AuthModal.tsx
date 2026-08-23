@@ -4,7 +4,7 @@ import { useAuthStore } from '../../store/useAuthStore';
 import {
   X, Shield, Mail, Lock, Eye, EyeOff, Loader2, AlertCircle,
   User as UserIcon, ArrowRight, Globe, Phone, KeyRound, CheckCircle2, ArrowLeft,
-  MessageCircle,
+  MessageCircle, HelpCircle,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -164,7 +164,7 @@ export const AuthModal: React.FC = () => {
 
   const titleMap: Record<Mode, string> = {
     login: 'Sign in to PlayBeat',
-    signup: 'Create your account',
+    signup: 'Create Account',
     forgot: 'Forgot Password',
     reset: 'Set New Password',
   };
@@ -194,24 +194,24 @@ export const AuthModal: React.FC = () => {
             className="relative w-full max-w-md max-h-[92vh] overflow-y-auto scrollbar-thin rounded-2xl bg-[#141414] border border-[#333] shadow-2xl p-0 z-10"
             role="dialog" aria-modal="true" aria-labelledby="auth-modal-title">
             {/* Header */}
-            <div className="text-center px-6 pt-7 pb-5 border-b border-[#333]">
-              <div className="flex items-center gap-2">
+            <div className="relative text-center px-6 pt-6 pb-5 border-b border-[#333]">
+              <div className="absolute left-5 top-5 flex items-center gap-2">
                 {mode !== 'login' && mode !== 'signup' && (
                   <button onClick={() => switchMode('login')} className="p-1 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white mr-1">
                     <ArrowLeft className="w-4 h-4" />
                   </button>
                 )}
-                <div className="w-8 h-8 rounded-xl bg-red-600/20 border border-red-500/30 flex items-center justify-center text-red-400 mx-auto">
-                  <Shield className="w-4 h-4" />
-                </div>
-                <div className="text-left">
-                  <h3 id="auth-modal-title" className="text-base font-bold text-white font-display">{titleMap[mode]}</h3>
-                  <p className="text-xs text-neutral-400">{subtitleMap[mode]}</p>
-                </div>
               </div>
-              <button onClick={handleClose} disabled={isSubmitting} className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-neutral-400 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed" aria-label="Close">
+              <button onClick={handleClose} disabled={isSubmitting} className="absolute left-5 top-5 p-1 text-neutral-300 hover:text-white disabled:opacity-50" aria-label="Close">
                 <X className="w-4 h-4" />
               </button>
+              <button type="button" className="absolute right-5 top-5 p-1 text-neutral-400 hover:text-white" aria-label="Authentication help" onClick={() => addToast('info', 'Secure sign-in', 'Use a provider button or continue with your email and password.')}>
+                <HelpCircle className="w-4 h-4" />
+              </button>
+              <div className="pt-12">
+                <h3 id="auth-modal-title" className="text-xl font-extrabold text-white font-display">{titleMap[mode]}</h3>
+                <p className="text-xs text-neutral-400 mt-1">{mode === 'signup' ? 'Join 25,000+ verified shoppers on PlayBeat Digital' : subtitleMap[mode]}</p>
+              </div>
             </div>
 
             {/* API error */}
@@ -243,27 +243,27 @@ export const AuthModal: React.FC = () => {
               <div className="px-6 pt-6 space-y-3">
                 <button
                   type="button"
-                  onClick={() => handleSocialAuth('google')}
+                  onClick={() => handleSocialAuth('facebook')}
                   disabled={Boolean(socialProvider)}
-                  className="w-full flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-xs font-semibold text-white transition-colors hover:bg-white/10"
+                  className="w-full flex items-center justify-center gap-3 rounded-lg border border-[#1877F2] bg-[#1877F2] px-3 py-3 text-xs font-semibold text-white transition-colors hover:bg-[#166fe5] disabled:opacity-60"
                 >
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white text-[10px] font-black text-slate-900">G</span>
-                  <span>{socialProvider === 'google' ? 'Connecting to Google...' : 'Continue with Google'}</span>
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white text-[11px] font-black text-[#1877F2]">f</span>
+                  <span>{socialProvider === 'facebook' ? 'Connecting to Facebook...' : 'Continue with Facebook'}</span>
                 </button>
                 <button
                   type="button"
-                  onClick={() => handleSocialAuth('facebook')}
+                  onClick={() => handleSocialAuth('google')}
                   disabled={Boolean(socialProvider)}
-                  className="w-full flex items-center justify-center gap-2 rounded-xl border border-[#1877F2]/30 bg-[#1877F2]/10 px-3 py-2.5 text-xs font-semibold text-[#7bb7ff] transition-colors hover:bg-[#1877F2]/20"
+                  className="w-full flex items-center justify-center gap-3 rounded-lg border border-[#333] bg-[#2a2a2a] px-3 py-3 text-xs font-semibold text-white transition-colors hover:bg-[#353535] disabled:opacity-60"
                 >
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#1877F2] text-[10px] font-black text-white">f</span>
-                  <span>{socialProvider === 'facebook' ? 'Connecting to Facebook...' : 'Continue with Facebook'}</span>
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white text-[10px] font-black text-[#4285F4]">G</span>
+                  <span>{socialProvider === 'google' ? 'Connecting to Google...' : 'Continue with Google'}</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => handleSocialAuth('x')}
                   disabled={Boolean(socialProvider)}
-                  className="w-full flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-xs font-semibold text-white transition-colors hover:bg-white/10 disabled:opacity-60"
+                  className="w-full flex items-center justify-center gap-3 rounded-lg border border-[#333] bg-[#2a2a2a] px-3 py-3 text-xs font-semibold text-white transition-colors hover:bg-[#353535] disabled:opacity-60"
                 >
                   <span className="flex h-6 w-6 items-center justify-center rounded-full bg-black border border-white/20 text-xs font-black text-white">𝕏</span>
                   <span>{socialProvider === 'x' ? 'Connecting to X...' : 'Continue with X'}</span>
@@ -272,7 +272,7 @@ export const AuthModal: React.FC = () => {
             )}
 
             {(mode === 'login' || mode === 'signup') && (
-              <div className="mx-6 mt-5 flex items-center gap-3 text-[10px] text-neutral-500">
+              <div className="mx-6 mt-6 flex items-center gap-3 text-[10px] text-neutral-500 uppercase tracking-wide">
                 <div className="h-px flex-1 bg-white/10" />
                 <span>or continue with email</span>
                 <div className="h-px flex-1 bg-white/10" />
