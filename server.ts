@@ -70,6 +70,12 @@ export function createApiApp(): Express {
     facebook: { clientId: process.env.FACEBOOK_CLIENT_ID, clientSecret: process.env.FACEBOOK_CLIENT_SECRET, authorization: 'https://www.facebook.com/v20.0/dialog/oauth', token: 'https://graph.facebook.com/v20.0/oauth/access_token', userInfo: 'https://graph.facebook.com/me?fields=id,name,email,picture', scope: 'email,public_profile' },
     x: { clientId: process.env.X_CLIENT_ID, clientSecret: process.env.X_CLIENT_SECRET, authorization: 'https://twitter.com/i/oauth2/authorize', token: 'https://api.twitter.com/2/oauth2/token', userInfo: 'https://api.twitter.com/2/users/me?user.fields=profile_image_url', scope: 'users.read tweet.read offline.access' },
   };
+  const oauthErrorRedirect = (provider: string, code: string) => {
+    const base = process.env.APP_URL || '/';
+    const url = new URL(base, 'http://localhost:3000');
+    url.searchParams.set('authError', `${provider}:${code}`);
+    return process.env.APP_URL ? url.toString() : `/?${url.searchParams.toString()}`;
+  };
   const oauthState = (provider: string, returnTo: string) => {
     const verifier = provider === 'x' ? crypto.randomBytes(32).toString('base64url') : undefined;
     const payload = JSON.stringify({ provider, returnTo: returnTo.startsWith('/') ? returnTo : '/', nonce: crypto.randomBytes(16).toString('hex'), verifier });
@@ -1126,7 +1132,7 @@ export function createApiApp(): Express {
     const provider = req.params.provider.toLowerCase();
     const config = oauthConfig[provider];
     if (!config || !config.clientId || !config.clientSecret) {
-      return res.status(503).json({ success: false, error: `${provider} sign-in is not configured on this server.` });
+      return res.redirect(oauthErrorRedirect(provider, 'not-configured'));
     }
     const callback = process.env.OAUTH_CALLBACK_URL || `${process.env.APP_URL || 'http://localhost:3000'}/api/auth/oauth/callback`;
     const url = new URL(config.authorization);

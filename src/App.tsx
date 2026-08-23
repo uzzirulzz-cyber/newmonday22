@@ -59,6 +59,19 @@ const AppContent: React.FC = () => {
       .catch(() => { /* Anonymous visitors have no session to hydrate. */ });
   }, []);
 
+  useEffect(() => {
+    const authError = new URLSearchParams(window.location.search).get('authError');
+    if (!authError) return;
+    const [provider, code] = authError.split(':');
+    const providerName = provider ? provider.charAt(0).toUpperCase() + provider.slice(1) : 'Social';
+    if (code === 'not-configured') {
+      useStore.getState().addToast('warning', `${providerName} sign-in unavailable`, 'This sign-in method is not configured yet. Please use email or contact support.');
+    } else {
+      useStore.getState().addToast('error', 'Sign-in could not be completed', 'Please try again or use email and password.');
+    }
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }, []);
+
   // ── URL-based routing ──────────────────────────────────────
   // On mount, check if the URL is /admin and switch to admin view.
   // Also listen for popstate (browser back/forward) so navigation works.
